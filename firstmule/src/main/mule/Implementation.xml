@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="ImplementationSub_Flow" doc:id="051344bd-f4c1-4907-893a-5a555cb1223b" >
+		<logger level="INFO" doc:name="Logger" doc:id="139be0b7-9f42-458b-82e4-d72e6e783c4a" message="Subflow called"/>
+		<http:request method="GET" doc:name="exchange_rates_call" doc:id="4c058b9f-ffe3-4f9c-91d6-61328c83c83a" config-ref="exchange_rates" path="/v1/latest">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"access_key" : "aa0b865ac96437ffc127addceec17dd5"
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="957e4fdb-f405-488a-be46-1b768ba8cc89" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    current_timestamp: payload.timestamp as DateTime,
+    base_value: payload.base,
+    requested_value: (payload.rates filterObject ($$ ~= upper(vars.inputkey))),
+        status: "success",
+        code: 200
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a22b4ed5-1867-44f3-be7b-2ea5855984c6" message="Subflow completed"/>
+	</sub-flow>
+</mule>
