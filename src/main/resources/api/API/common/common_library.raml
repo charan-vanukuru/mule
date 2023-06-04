@@ -1,0 +1,9 @@
+#%RAML 1.0 Library
+usage:
+traits:
+  transactionId: !include /API/common/Traits and datatypes/header.raml
+  queryParams: !include /API/common/Traits and datatypes/queryParams_dataType.raml
+types:
+  200Response: !include /API/common/Traits and datatypes/200Response_dataType.raml
+  404Response: !include /API/common/Traits and datatypes/404Response_dataType.raml
+  500Response: !include /API/common/Traits and datatypes/500Response_dataType.raml

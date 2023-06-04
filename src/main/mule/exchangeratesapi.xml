@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+    <http:listener-config name="exchangeratesapi-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="exchangeratesapi-config" api="exchangeratesapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <configuration-properties doc:name="Configuration properties" doc:id="8d4ef7f0-c3f4-411e-a3dc-8bc4d4df9184" file="property_files/${mule_env}.yaml" />
+	<api-gateway:autodiscovery apiId="18739323" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="cdecb715-c79e-46e0-a72e-8ae3d774ab11" flowRef="exchangeratesapi-main" />
+	<configuration doc:name="Configuration" doc:id="76da12f9-73fc-443f-83e4-81abcc911c9c" defaultErrorHandler-ref="globalErrorHandlerError_Handler" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="ac5de4c7-1883-4710-9cff-86d0c20b173e" basePath="#[p('backend.basepath')]" >
+		<http:request-connection host="#[p('backend.hosbackend.host')]" />
+	</http:request-config>
+	<flow name="exchangeratesapi-main">
+        <http:listener config-ref="exchangeratesapi-httpListenerConfig" path="${http.path}" doc:name="http_listener">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="exchangeratesapi-config" />
+        <error-handler ref="globalErrorHandlerError_Handler">
+            
+        </error-handler>
+    </flow>
+    <flow name="exchangeratesapi-console">
+        <http:listener config-ref="exchangeratesapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="exchangeratesapi-config" />
+		<error-handler ref="globalErrorHandlerError_Handler" />
+    </flow>
+    <flow name="get:\rates:exchangeratesapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="9164f1c0-ae7b-4eb8-9031-c579c235f5ab">
+            <ee:message>
+            </ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dwl/inputCurrency.dwl" variableName="inputCurrency" />
+			</ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="8544aac8-35d3-4d0c-8960-9341dcdb6883" name="getRates_SubflowSub_Flow"/>
+    </flow>
+</mule>

@@ -1,0 +1,21 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  current_timestamp:
+    type: datetime
+    example: "2023-06-03T15:33:03Z"
+  base_value:
+    type: string
+    required: true
+    example: "EUR"
+  requested_value:
+    type: object
+    required: true
+  status:
+    type: string
+    required: true
+    example: "success"
+  code: 
+    type: number
+    required: true
+    example: 200

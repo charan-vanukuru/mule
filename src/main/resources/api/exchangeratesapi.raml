@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: exchangeRatesAPI
+description: This API is used to retrieve the current currency rate of foriegn exchange.
+uses:
+  common:  /API/common/common_library.raml
+/rates:
+  get:
+    is:
+      - common.transactionId
+      - common.queryParams
+    responses:
+      200:
+       body:
+         application/json:
+          type: common.200Response 
+          example: !include /API/common/examples/200_Response.raml     
+      404:
+        body:
+          application/json:
+            type: common.404Response
+            example: !include /API/common/examples/404_Response.raml    
+      500:
+        body:
+          application/json:
+            type: common.500Response
+            example: !include /API/common/examples/500_Response.raml

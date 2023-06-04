@@ -1,0 +1,10 @@
+http:
+  host: "0.0.0.0"
+  port: "9081"
+  path: "/rates"
+
+backend:
+  host: "api.exchangeratesapi.io"
+  basepath: "/v1"
+  path: "/latest"
+  accesskey: "aa0b865ac96437ffc127addceec17dd5"
