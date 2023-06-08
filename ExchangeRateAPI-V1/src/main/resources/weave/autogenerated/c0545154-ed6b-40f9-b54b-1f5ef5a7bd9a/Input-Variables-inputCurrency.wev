@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_c0545154_ed6b_40f9_b54b_1f5ef5a7bd9a_Input_Variables_inputCurrency = String
+

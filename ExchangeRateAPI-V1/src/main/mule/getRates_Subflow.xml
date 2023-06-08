@@ -5,17 +5,18 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<sub-flow name="getRates_SubflowSub_Flow" doc:id="4d47ba6e-f381-4ee7-bd03-83c41d049832" >
-		<logger level="INFO" doc:name="Logger" doc:id="65b0f952-06c9-442d-bb28-a125d38a017f" message="subFlow called"/>
-		<set-variable value="#[output json&#10;---&#10;&quot;http://&quot; ++ p('backend.host') ++ p('backend.basepath') ++ p('backend.path') ++ &quot;?&quot; ++ &quot;access_key=&quot; ++ p('backend.accesskey')]" doc:name="backendURL" doc:id="9e3f1eac-2e69-4378-aaa0-032b9fffd45f" variableName="backendURL"/>
+	<flow name="getRates_SubflowFlow" doc:id="c0545154-ed6b-40f9-b54b-1f5ef5a7bd9a" >
+		<logger level="INFO" doc:name="Logger" doc:id="65b0f952-06c9-442d-bb28-a125d38a017f" message="subFlow called" />
+		<logger level="INFO" doc:name="Logger" doc:id="34ba17d6-cc9e-4a8a-bd04-64e426740b28" message="#[output json&#10;---&#10;payload]" />
+		<set-variable value="#[output json&#10;---&#10;&quot;http://&quot; ++ p('backend.host') ++ p('backend.basepath') ++ p('backend.path') ++ &quot;?&quot; ++ &quot;access_key=&quot; ++ p('backend.accesskey')]" doc:name="backendURL" doc:id="9e3f1eac-2e69-4378-aaa0-032b9fffd45f" variableName="backendURL" />
 		<http:request method="GET" doc:name="Request" doc:id="79f50702-e218-4c32-a725-aa458fe4e9e8" config-ref="HTTP_Request_configuration" url="#[vars.backendURL]">
-			<http:body ><![CDATA[payload]]></http:body>
+			<http:body><![CDATA[payload]]></http:body>
 		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="d4675303-8d0d-4d4c-84a3-d17bf7b6a983" >
-			<ee:message >
+		<ee:transform doc:name="Transform Message" doc:id="d4675303-8d0d-4d4c-84a3-d17bf7b6a983">
+			<ee:message>
 				<ee:set-payload resource="dwl/response_Transformation.dwl" />
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="34ba17d6-cc9e-4a8a-bd04-64e426740b28" message="#[output json&#10;---&#10;payload]"/>
-	</sub-flow>
+		<error-handler ref="globalErrorHandlerError_Handler" />
+	</flow>
 </mule>

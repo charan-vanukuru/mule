@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="getRates_Subflow-suite.xml" />
+	<munit:test name="getRates_SubflowSub_Flow-test" doc:id="2df1b056-de6c-4bdc-9754-6a840862c69d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Request" doc:id="cbc8a5b2-7aa9-4b17-bd4c-fee66f77d3cf" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="79f50702-e218-4c32-a725-aa458fe4e9e8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json  --- readUrl('classpath://getRatesSubflowSubFlowtest\mock_payload.dwl')]" mediaType="application/json " encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://getRatesSubflowSubFlowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="inputCurrency" value="#[output application/json --- readUrl('classpath://getRatesSubflowSubFlowtest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getRatesSubflowSubFlowtest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="backendURL" value="#[output application/json --- readUrl('classpath://getRatesSubflowSubFlowtest\mock_variable_2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="d731ab01-35e5-4adc-b0d3-e3d8ec98ed8b" >
+				<munit:payload value="#[readUrl('classpath://getRatesSubflowSubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getRatesSubflowSubFlowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="inputCurrency" value="#[output application/json --- readUrl('classpath://getRatesSubflowSubFlowtest\set-event_variable_.dwl')]" encoding="UTF-8" mediaType="application/json" />
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getRatesSubflowSubFlowtest\set-event_variable_1.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getRates_SubflowSub_Flow" doc:id="0f0f296c-6dc6-4297-a421-4a54c5714410" name="getRates_SubflowFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="4aefd57b-cf99-496c-99a5-4840903ff7eb" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getRatesSubflowSubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
