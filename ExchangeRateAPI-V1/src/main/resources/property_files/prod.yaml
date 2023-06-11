@@ -7,4 +7,4 @@ backend:
   host: "api.exchangeratesapi.io"
   basepath: "/v1"
   path: "/latest"
-  access_key: "aa0b865ac96437ffc127addceec17dd5"
+  accesskey: "aa0b865ac96437ffc127addceec17dd5"
